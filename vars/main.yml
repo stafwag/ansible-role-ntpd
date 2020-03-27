@@ -1,0 +1,4 @@
+---
+# vars file for ntpd
+
+ntp_service: ntpd

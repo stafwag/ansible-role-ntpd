@@ -1,0 +1,30 @@
+---
+# tasks file for ntpd
+
+- name: set OS related variables
+  include_vars: '{{ item }}'
+  with_first_found:
+    - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
+    - '{{ ansible_distribution }}.yml'
+    - '{{ ansible_os_family }}.yml'
+    - defaults.yml
+
+- name: setup ntp.conf
+  template:
+    src: "ntp.conf.j2"
+    dest: "{{ ntp_conf }}"
+  notify: "restart ntp"
+  when:
+    - ntp_conf is defined
+    - ntp_conf is not none
+    - ntp_conf | length > 0
+
+- name: start ntpd
+  service:
+    name: "{{ ntp_service }}"
+    enabled: yes
+    state: started
+  when:
+    - ntp_service is defined
+    - ntp_service is not none
+    - ntp_service | length > 0

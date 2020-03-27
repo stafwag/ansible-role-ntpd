@@ -1,0 +1,4 @@
+---
+ntp_driftfile:
+ntp_service:
+ntp_conf:
