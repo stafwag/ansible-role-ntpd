@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: ntp
+  role_name: ntpd
   author: staf wagemakers <staf@wagemakers.be>
   description: configure ntpd
   license: license BSD, MIT)
