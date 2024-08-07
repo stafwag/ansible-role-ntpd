@@ -1,3 +1,4 @@
 ---
-ntp_driftfile: /var/lib/ntp/drift
+ntp_driftfile: /var/lib/ntpsec/ntp.drift
 ntp_service: ntp
+ntp_conf: /etc/ntpsec/ntp.conf
