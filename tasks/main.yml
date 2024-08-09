@@ -2,12 +2,28 @@
 # tasks file for ntpd
 
 - name: Set OS related variables
-  ansible.builtin.include_vars: '{{ item }}'
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-    - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
-    - '{{ ansible_distribution }}.yml'
-    - '{{ ansible_os_family }}.yml'
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
     - defaults.yml
+
+- name: Set OS/ntp_provider  related  variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "provider/{{ ntp_provider }}/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "provider/{{ ntp_provider }}/{{ ansible_distribution }}.yml"
+    - "provider/{{ ntp_provider }}/{{ ansible_os_family }}.yml"
+    - defaults.yml
+
+- name: Install ntp related packagess
+  ansible.builtin.package:
+    name: "{{ pkg }}"
+    state: present
+  with_items: "{{ ntp_packages | default([]) }}"
+  loop_control:
+    loop_var: pkg
 
 - name: Setup ntp.conf
   ansible.builtin.template:
