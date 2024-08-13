@@ -1,3 +1,4 @@
 ---
-ntp_driftfile: /var/lib/ntp/drift
-ntp_service: chronyd
+ntpd_os_defaults:
+  provider:
+    chrony

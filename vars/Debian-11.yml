@@ -1,2 +1,4 @@
 ---
-ntp_provider: ntpd
+ntpd_os_defaults:
+  provider:
+    ntpd

@@ -1,2 +1,2 @@
 ---
-ntp_driftfile: /var/lib/ntp/drift
+ntpd_os_defaults:

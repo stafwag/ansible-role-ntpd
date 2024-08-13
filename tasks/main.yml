@@ -1,6 +1,25 @@
 ---
 # tasks file for ntpd
 
+- name: DEBUG show ntpd
+  ansible.builtin.debug:
+    var:
+      ntpd
+  tags:
+    - debug
+    - never
+
+# We dont want to modify the ntpd dict that is provided to the role.
+# _ntpd dict is defined in the defaults.
+
+- name: DEBUG show _ntpd
+  ansible.builtin.debug:
+    var:
+      _ntpd
+  tags:
+    - debug
+    - never
+
 - name: Set OS related variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
@@ -9,39 +28,109 @@
     - "{{ ansible_os_family }}.yml"
     - defaults.yml
 
-- name: Set OS/ntp_provider  related  variables
+- name: DEBUG show ntpd_os_defaults
+  ansible.builtin.debug:
+    var:
+      ntpd_os_defaults
+  tags:
+    - debug
+    - never
+
+- name: Combine with os_defaults
+  ansible.builtin.set_fact:
+    _ntpd: "{{ ntpd_os_defaults | ansible.builtin.combine(_ntpd) }}"
+
+- name: DEBUG show _ntpd
+  ansible.builtin.debug:
+    var:
+      _ntpd
+  tags:
+    - debug
+    - never
+
+- name: Set _ntpd_provider
+  ansible.builtin.set_fact:
+    _provider: "{{ _ntpd.provider | default('ntpd') }}"
+
+- name: DEBUG show _ntpd_provider
+  ansible.builtin.debug:
+    var:
+      _ntpd_provider
+  tags:
+    - debug
+    - never
+
+- name: Set OS/ntp_provider related variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-    - "provider/{{ ntp_provider }}/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-    - "provider/{{ ntp_provider }}/{{ ansible_distribution }}.yml"
-    - "provider/{{ ntp_provider }}/{{ ansible_os_family }}.yml"
+    - "provider/{{ _provider }}/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "provider/{{ _provider }}/{{ ansible_distribution }}.yml"
+    - "provider/{{ _provider }}/{{ ansible_os_family }}.yml"
     - defaults.yml
+
+- name: DEBUG ntpd_provider_defaults
+  ansible.builtin.debug:
+    var:
+      ntpd_provider_defaults
+  tags:
+    - debug
+    - never
+
+- name: Combine with provider_defaults
+  ansible.builtin.set_fact:
+    _ntpd: "{{ ntpd_provider_defaults | ansible.builtin.combine(_ntpd) }}"
+  when:
+    - ntpd_provider_defaults | default(false)
+
+- name: DEBUG show ntpd_defaults
+  ansible.builtin.debug:
+    var:
+      ntpd_defaults
+  tags:
+    - debug
+    - never
+
+- name: DEBUG show _ntpd
+  ansible.builtin.debug:
+    var:
+      _ntpd
+  tags:
+    - debug
+    - never
+
+- name: Combine with defaults
+  ansible.builtin.set_fact:
+    _ntpd: "{{ ntpd_defaults | ansible.builtin.combine(_ntpd) }}"
+
+- name: DEBUG show _ntpd
+  ansible.builtin.debug:
+    var:
+      _ntpd
+  tags:
+    - debug
+    - never
 
 - name: Install ntp related packagess
   ansible.builtin.package:
     name: "{{ pkg }}"
     state: present
-  with_items: "{{ ntp_packages | default([]) }}"
+  with_items: "{{ _ntpd.packages | default([]) }}"
   loop_control:
     loop_var: pkg
 
 - name: Setup ntp.conf
   ansible.builtin.template:
-    src: "ntp.conf.j2"
-    dest: "{{ ntp_conf }}"
+    src: "{{ _ntpd.template }}"
+    dest: "{{ _ntpd.ntp_conf }}"
     mode: "0444"
   notify: "Restart ntp"
   when:
-    - ntp_conf is defined
-    - ntp_conf is not none
-    - ntp_conf | length > 0
+    - _ntpd.ntp_conf | default(false)
 
 - name: Start ntpd
   ansible.builtin.service:
-    name: "{{ ntp_service }}"
+    name: "{{ _ntpd.service }}"
     enabled: true
     state: started
   when:
-    - ntp_service is defined
-    - ntp_service is not none
-    - ntp_service | length > 0
+    - _ntpd.service | default(false)
