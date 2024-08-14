@@ -125,7 +125,7 @@
     mode: "0444"
   notify: "Restart ntp"
   when:
-    - _ntpd.ntp_conf | default(false)
+    - _ntpd.conf_file | default(false)
 
 - name: Start ntpd
   ansible.builtin.service:

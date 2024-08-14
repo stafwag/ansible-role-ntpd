@@ -5,4 +5,4 @@ ntpd_provider_defaults:
   driftfile:
     /var/lib/ntpsec/ntp.drift
   service: ntp
-  ntp_conf: /etc/ntpsec/ntp.conf
+  conf_file: /etc/ntpsec/ntp.conf
