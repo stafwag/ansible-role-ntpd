@@ -52,10 +52,10 @@
   ansible.builtin.set_fact:
     _provider: "{{ _ntpd.provider | default('ntpd') }}"
 
-- name: DEBUG show _ntpd_provider
+- name: DEBUG show _provider
   ansible.builtin.debug:
     var:
-      _ntpd_provider
+      _provider
   tags:
     - debug
     - never
@@ -66,7 +66,7 @@
     - "provider/{{ _provider }}/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "provider/{{ _provider }}/{{ ansible_distribution }}.yml"
     - "provider/{{ _provider }}/{{ ansible_os_family }}.yml"
-    - defaults.yml
+    - "provider/{{ _provider }}/defaults.yml"
 
 - name: DEBUG ntpd_provider_defaults
   ansible.builtin.debug:
@@ -110,7 +110,7 @@
     - debug
     - never
 
-- name: Install ntp related packagess
+- name: Install ntp related packages
   ansible.builtin.package:
     name: "{{ pkg }}"
     state: present
@@ -127,7 +127,7 @@
   when:
     - _ntpd.conf_file | default(false)
 
-- name: Start ntpd
+- name: Start ntp service
   ansible.builtin.service:
     name: "{{ _ntpd.service }}"
     enabled: true
