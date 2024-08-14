@@ -118,10 +118,10 @@
   loop_control:
     loop_var: pkg
 
-- name: Setup ntp.conf
+- name: Setup config file
   ansible.builtin.template:
     src: "{{ _ntpd.template }}"
-    dest: "{{ _ntpd.ntp_conf }}"
+    dest: "{{ _ntpd.conf_file }}"
     mode: "0444"
   notify: "Restart ntp"
   when:

@@ -1,0 +1,6 @@
+---
+ntpd_provider_defaults:
+  packages:
+    - chrony
+  service:
+    chronyd

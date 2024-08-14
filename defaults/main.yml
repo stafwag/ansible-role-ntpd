@@ -14,7 +14,7 @@ ntpd_defaults:
     ntpd
   template:
     ntp.conf.j2
-  ntpd_conf:
+  conf_file:
     /etc/ntp.conf
   driftfile:
     /var/lib/ntp/drift
