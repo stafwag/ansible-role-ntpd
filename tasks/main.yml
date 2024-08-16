@@ -123,7 +123,7 @@
     src: "{{ _ntpd.template }}"
     dest: "{{ _ntpd.conf_file }}"
     mode: "0444"
-  notify: "Restart ntp"
+  notify: "Restart ntp service"
   when:
     - _ntpd.conf_file | default(false)
 
