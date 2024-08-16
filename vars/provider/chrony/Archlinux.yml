@@ -2,6 +2,8 @@
 ntpd_provider_defaults:
   packages:
     - chrony
+  packages_to_remove:
+    - ntp
   service:
     chronyd
   driftfile:

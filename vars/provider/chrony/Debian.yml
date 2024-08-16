@@ -3,7 +3,7 @@ ntpd_provider_defaults:
   packages:
     - chrony
   service:
-    chronyd
+    chrony
   driftfile:
     /var/lib/chrony/chrony.drift
   template:

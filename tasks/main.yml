@@ -110,6 +110,14 @@
     - debug
     - never
 
+- name: Remove ntp related packages
+  ansible.builtin.package:
+    name: "{{ pkg }}"
+    state: absent
+  with_items: "{{ _ntpd.packages_to_remove | default([]) }}"
+  loop_control:
+    loop_var: pkg
+
 - name: Install ntp related packages
   ansible.builtin.package:
     name: "{{ pkg }}"
@@ -126,6 +134,41 @@
   notify: "Restart ntp service"
   when:
     - _ntpd.conf_file | default(false)
+
+- name: DEBUG show _ntpd.service
+  ansible.builtin.debug:
+    var:
+      _ntpd.service
+  tags:
+    - debug
+    - never
+
+- name: Get the service facts
+  ansible.builtin.service_facts:
+
+- name: Create service_list
+  ansible.builtin.set_fact:
+    service_list:
+      "{{ services | dict2items | map(attribute='value.name') | list | map('regex_replace', '\\.service$', '') | list }}"
+  when:
+    - _ntpd.services_to_disable | default(false)
+
+- name: DEBUG show service_list
+  ansible.builtin.debug:
+    var:
+      service_list
+  tags:
+    - debug
+    - never
+
+- name: Disable services
+  ansible.builtin.debug:
+    var: "{{ service }}"
+  when:
+    "service in service_list"
+  with_items: "{{ _ntpd.services_to_disable | default([]) }}"
+  loop_control:
+    loop_var: service
 
 - name: Start ntp service
   ansible.builtin.service:

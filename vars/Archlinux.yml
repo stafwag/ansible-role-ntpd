@@ -1,3 +1,4 @@
 ---
 ntpd_os_defaults:
-  driftfile: /var/lib/ntp.drift
+  provider:
+    systemd-timesyncd
