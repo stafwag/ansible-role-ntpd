@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{% for item in ntp_servers %}
+{% for item in _ntpd.servers %}
 server {{ item }}
 {% endfor %}
 
@@ -12,4 +12,4 @@ restrict 127.0.0.1
 restrict ::1
 
 # Location of drift file
-driftfile {{ ntp_driftfile }}
+driftfile {{ _ntpd.driftfile }}
