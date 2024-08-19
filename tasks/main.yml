@@ -12,7 +12,6 @@
 # We dont want to modify the ntpd dict that is provided to the role.
 # _ntpd dict is defined in the defaults.
 
-
 - name: Set OS related variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
