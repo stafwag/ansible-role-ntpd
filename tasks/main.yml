@@ -127,6 +127,18 @@
     - debug
     - never
 
+- name: Combine with ntpd
+  ansible.builtin.set_fact:
+    _ntpd: "{{ _ntpd | ansible.builtin.combine(ntpd) }}"
+
+- name: DEBUG show _ntpd
+  ansible.builtin.debug:
+    var:
+      _ntpd
+  tags:
+    - debug
+    - never
+
 - name: Remove ntp related packages
   ansible.builtin.package:
     name: "{{ pkg }}"
